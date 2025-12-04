@@ -76,6 +76,26 @@ player_s* player_init()
         };
     }
 
+    player->animations[HURT].texture = sfTexture_createFromFile("assets/player/HURT.png", NULL);
+    player->animations[HURT].frameCount = 4;
+    player->animations[HURT].currentFrame = 0;
+    player->animations[HURT].frameTime = 0.1f;
+    player->animations[HURT].left = 0;
+    player->animations[HURT].top = 0;
+    player->animations[HURT].width = 96;
+    player->animations[HURT].height = 84;
+
+    player->animations[HURT].frames = malloc(sizeof(sfIntRect) * player->animations[HURT].frameCount);
+    player->animations[HURT].lastFrameTime = 0.0f;
+    for (int i = 0; i < player->animations[HURT].frameCount; i++) {
+        player->animations[HURT].frames[i] = (sfIntRect){
+            96 * i,
+            0,
+            96,
+            84
+        };
+    }
+
     player->currentAnimation = IDLE;
     sfSprite_setTexture(player->sprite, player->animations[IDLE].texture, sfTrue);
     sfSprite_setTextureRect(player->sprite, player->animations[IDLE].frames[0]);
@@ -87,6 +107,8 @@ void player_set_animation(player_s* player, player_animation_e animationType)
 {
     if (player->currentAnimation != animationType) {
         player->currentAnimation = animationType;
+        sfSprite_setTexture(player->sprite, player->animations[animationType].texture, sfTrue);
+        sfSprite_setTextureRect(player->sprite, player->animations[animationType].frames[0]);
         player->animations[player->currentAnimation].currentFrame = 0;
         player->animations[player->currentAnimation].lastFrameTime = 0.0f;
     }
@@ -97,9 +119,7 @@ void player_update(player_s* player, float deltaTime)
     player_animation_s* anim = &player->animations[player->currentAnimation];
 
     anim->lastFrameTime += deltaTime;
-printf("Texture size = %d x %d\n",
-    sfTexture_getSize(anim->texture).x,
-    sfTexture_getSize(anim->texture).y);
+    printf("Texture size = %d x %d\n", sfTexture_getSize(anim->texture).x, sfTexture_getSize(anim->texture).y);
     // Change frame
     if (anim->lastFrameTime >= anim->frameTime) {
         anim->lastFrameTime = 0.0f;
@@ -116,8 +136,6 @@ printf("Texture size = %d x %d\n",
     // Update sprite position (optional)
     sfSprite_setPosition(player->sprite, player->position);
 }
-
-
 
 void player_draw(sfRenderWindow* window, player_s* player)
 {
@@ -142,7 +160,7 @@ int main(void)
     sfRenderWindow_setFramerateLimit(window, SF_INFINIT_FPS);
 
     player_s* player = player_init();
-
+    player_set_animation(player, HURT);
     sfClock* clock = sfClock_create();
 
     while (sfRenderWindow_isOpen(window)) {
