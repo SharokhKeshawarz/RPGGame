@@ -1,0 +1,3 @@
+.vscode/
+valgrind_suppress.supp
+build/

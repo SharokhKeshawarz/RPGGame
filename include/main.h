@@ -1,3 +1,4 @@
+#pragma once
 #ifndef _MAIN_H_
 #define _MAIN_H_
 
@@ -10,12 +11,16 @@
 #include <string.h>
 #include <stdarg.h>
 #include <inttypes.h>
+#include <stdbool.h>
 
 #include <SFML/System.h>
 #include <SFML/Window.h>
 #include <SFML/Graphics.h>
 #include <SFML/Audio.h>
 #include <SFML/Network.h>
+
+
+#define DEBUG 0
 
 
 #endif
